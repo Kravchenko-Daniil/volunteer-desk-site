@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Заявка №{{ application.id }} — Рядом{% endblock %}
+{% block main_class %}container container-wide{% endblock %}
+{% block content %}
+<div class="detail-heading">
+  <div><a class="back-link" href="{% url 'applications:list' %}">← Все заявки</a><h1>Заявка №{{ application.id }}</h1><p>Создана {{ application.created_at|date:'d.m.Y в H:i' }}</p></div>
+  <span class="status status-{{ application.status }} status-large">{{ application.get_status_display }}</span>
+</div>
+
+<div class="detail-layout">
+  <div class="detail-main">
+    <section class="surface detail-section">
+      <div class="section-title"><span>01</span><h2>Основные данные</h2></div>
+      <dl class="data-grid">
+        <div><dt>ФИО заявителя</dt><dd>{{ application.applicant_full_name }}</dd></div>
+        <div><dt>Email</dt><dd>{{ application.applicant_email|default:'Не указан' }}</dd></div>
+        <div><dt>Район</dt><dd>{{ application.district }}</dd></div>
+        <div><dt>Количество людей</dt><dd>{{ application.people_needed|default:'Не указано' }}</dd></div>
+        <div><dt>Кем создана</dt><dd>{{ application.created_by_user|default:'Публичная форма' }}</dd></div>
+        <div><dt>Назначенный волонтёр</dt><dd>{{ application.assigned_volunteer|default:'Не назначен' }}</dd></div>
+      </dl>
+    </section>
+    <section class="surface detail-section">
+      <div class="section-title"><span>02</span><h2>Описание помощи</h2></div>
+      <div class="prose-block">{{ application.help_description|linebreaksbr }}</div>
+      {% if application.comment %}<div class="comment-block"><strong>Комментарий заявителя</strong><p>{{ application.comment|linebreaksbr }}</p></div>{% endif %}
+    </section>
+    <section class="surface detail-section history-section">
+      <div class="section-title"><span>03</span><h2>История действий</h2></div>
+      <ol class="timeline">
+        {% for action in application.actions.all %}
+          <li><span class="timeline-dot"></span><div><time>{{ action.created_at|date:'d.m.Y H:i' }}</time><strong>{{ action.get_action_display }}</strong><p>{% if action.changed_by_user %}{{ action.changed_by_user }}{% else %}Публичная форма{% endif %}{% if action.assigned_volunteer %} · Волонтёр: {{ action.assigned_volunteer }}{% endif %}{% if action.comment %}<br>{{ action.comment }}{% endif %}</p></div></li>
+        {% empty %}<li class="empty-state">История пока пуста.</li>{% endfor %}
+      </ol>
+    </section>
+  </div>
+
+  <aside class="detail-sidebar">
+    <section class="surface action-panel">
+      <h2>Действия</h2>
+      {% if application.status == 'new' %}
+        <form method="post" action="{% url 'applications:accept' application.id %}" onsubmit="return confirm('Принять заявку?')">{% csrf_token %}<button class="button full" type="submit">Принять заявку</button></form>
+        <form method="post" action="{% url 'applications:reject' application.id %}" onsubmit="return confirm('Отклонить заявку? Это действие нельзя отменить.')">{% csrf_token %}<button class="button danger ghost full" type="submit">Отклонить</button></form>
+      {% elif application.status == 'accepted' %}
+        <form method="post" action="{% url 'applications:assign' application.id %}" class="form" onsubmit="return confirm('Назначить выбранного волонтёра?')">
+          {% csrf_token %}<div class="field"><label for="volunteer_id">Активный волонтёр</label><select name="volunteer_id" id="volunteer_id" required>{% for volunteer in volunteers %}<option value="{{ volunteer.id }}">{{ volunteer }}</option>{% endfor %}</select></div><button class="button full" type="submit">Назначить</button>
+        </form>
+      {% else %}<p class="panel-note">Для текущего статуса дополнительных действий нет.</p>{% endif %}
+      <a class="button secondary full" href="{% url 'exports:application_pdf' application.id %}" target="_blank">Распечатать заявку <small>PDF</small></a>
+    </section>
+    <section class="surface meta-panel"><h2>Служебные данные</h2><dl><div><dt>Источник</dt><dd>{{ application.get_created_from_display }}</dd></div><div><dt>Версия согласия</dt><dd>{{ application.personal_data_policy_version|default:'—' }}</dd></div><div><dt>Обновлена</dt><dd>{{ application.updated_at|date:'d.m.Y H:i' }}</dd></div></dl></section>
+  </aside>
+</div>
+{% endblock %}

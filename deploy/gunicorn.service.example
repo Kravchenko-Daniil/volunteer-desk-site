@@ -1,0 +1,18 @@
+[Unit]
+Description=Help requests Gunicorn
+After=network.target postgresql.service
+
+[Service]
+User=help-requests
+Group=www-data
+WorkingDirectory=/srv/help_requests_site
+EnvironmentFile=/srv/help_requests_site/.env
+ExecStart=/srv/help_requests_site/.venv/bin/gunicorn config.wsgi:application --workers 3 --bind unix:/run/help_requests/gunicorn.sock --access-logfile - --error-logfile -
+RuntimeDirectory=help_requests
+RuntimeDirectoryMode=0755
+Restart=on-failure
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

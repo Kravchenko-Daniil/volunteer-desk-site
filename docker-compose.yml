@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-help_requests}
+      POSTGRES_USER: ${DATABASE_USER:-help_requests_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-help_requests_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-docker-development-secret-key-change-before-sharing}
+      DEBUG: "True"
+      ALLOWED_HOSTS: 127.0.0.1,localhost,0.0.0.0
+      DATABASE_NAME: ${DATABASE_NAME:-help_requests}
+      DATABASE_USER: ${DATABASE_USER:-help_requests_user}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-help_requests_password}
+      DATABASE_HOST: db
+      DATABASE_PORT: "5432"
+      USE_SQLITE: "False"
+      WAIT_FOR_DATABASE: "True"
+      RUN_MIGRATIONS: "True"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

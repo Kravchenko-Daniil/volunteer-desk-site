@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Заявка отправлена — Рядом{% endblock %}
+{% block content %}<div class="success-state surface"><span class="success-icon">✓</span><span class="eyebrow">Готово</span><h1>Заявка отправлена</h1><p>Координатор увидит обращение и свяжется с вами, если потребуется уточнение.</p><a class="button" href="{% url 'core:home' %}">Вернуться на главную</a></div>{% endblock %}

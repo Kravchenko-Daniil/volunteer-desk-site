@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Мои заявки — Рядом{% endblock %}
+{% block main_class %}container container-wide{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Кабинет волонтёра</span><h1>Мои заявки</h1><p>Назначенные вам и созданные вами обращения.</p></div><div class="heading-actions"><a class="button" href="{% url 'applications:volunteer_create_self' %}">Заявка для себя</a><a class="button ghost" href="{% url 'applications:volunteer_create_for_other' %}">Для другого человека</a></div></div>
+<div class="surface table-wrap desktop-table">
+  <table><thead><tr><th>№</th><th>Дата</th><th>Заявитель</th><th>Район</th><th>Статус</th><th></th></tr></thead><tbody>
+    {% for app in applications %}<tr><td class="table-id">#{{ app.id }}</td><td>{{ app.created_at|date:'d.m.Y H:i' }}</td><td><strong>{{ app.applicant_full_name }}</strong></td><td>{{ app.district }}</td><td><span class="status status-{{ app.status }}">{{ app.get_status_display }}</span></td><td><a class="row-action" href="{% url 'applications:volunteer_detail' app.id %}">Открыть →</a></td></tr>
+    {% empty %}<tr><td colspan="6" class="empty-state"><span>Заявок пока нет</span><small>Назначенные и созданные заявки появятся здесь.</small></td></tr>{% endfor %}
+  </tbody></table>
+</div>
+<div class="mobile-card-list" data-testid="mobile-volunteer-application-cards">
+  {% for app in applications %}<article class="mobile-application-card"><div class="mobile-card-top"><span class="table-id">#{{ app.id }}</span><span class="status status-{{ app.status }}">{{ app.get_status_display }}</span></div><h2>{{ app.applicant_full_name }}</h2><dl><div><dt>Район</dt><dd>{{ app.district }}</dd></div><div><dt>Дата</dt><dd>{{ app.created_at|date:'d.m.Y H:i' }}</dd></div></dl><a class="button ghost" href="{% url 'applications:volunteer_detail' app.id %}">Открыть заявку</a></article>
+  {% empty %}<div class="surface empty-state"><span>Заявок пока нет</span><small>Назначенные и созданные заявки появятся здесь.</small></div>{% endfor %}
+</div>
+{% endblock %}

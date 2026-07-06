@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Заявки — панель координатора{% endblock %}
+{% block main_class %}container container-wide{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow">Панель координатора</span><h1>Заявки</h1><p>Поиск, фильтрация и обработка обращений.</p></div>
+  <a class="button secondary" href="{% url 'exports:applications_xlsx' %}?{{ request.GET.urlencode }}">Экспортировать Excel</a>
+</div>
+
+<form method="get" class="surface filters" data-testid="adaptive-filters">
+  <div class="filter-grid">
+    {% for field in filter_form %}
+      <div class="field {% if field.errors %}has-error{% endif %}">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+    {% endfor %}
+  </div>
+  <div class="filter-actions"><button class="button" type="submit">Применить фильтры</button><a class="button ghost" href="{% url 'applications:list' %}">Сбросить</a></div>
+</form>
+
+<div class="surface table-wrap desktop-table">
+  <table>
+    <thead><tr><th>№</th><th>Создана</th><th>Заявитель</th><th>Район</th><th>Статус</th><th>Волонтёр</th><th class="table-action"></th></tr></thead>
+    <tbody>
+      {% for app in applications %}
+        <tr>
+          <td class="table-id">#{{ app.id }}</td><td>{{ app.created_at|date:'d.m.Y H:i' }}</td>
+          <td><strong>{{ app.applicant_full_name }}</strong><small>{{ app.applicant_email|default:'Email не указан' }}</small></td>
+          <td>{{ app.district }}</td><td><span class="status status-{{ app.status }}">{{ app.get_status_display }}</span></td>
+          <td>{{ app.assigned_volunteer|default:'Не назначен' }}</td>
+          <td><a class="row-action" href="{% url 'applications:detail' app.id %}" aria-label="Открыть заявку №{{ app.id }}">Открыть →</a></td>
+        </tr>
+      {% empty %}<tr><td colspan="7" class="empty-state"><span>Заявок пока нет</span><small>Новые обращения появятся здесь.</small></td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="mobile-card-list" data-testid="mobile-application-cards">
+  {% for app in applications %}
+    <article class="mobile-application-card">
+      <div class="mobile-card-top"><span class="table-id">#{{ app.id }}</span><span class="status status-{{ app.status }}">{{ app.get_status_display }}</span></div>
+      <h2>{{ app.applicant_full_name }}</h2>
+      <dl><div><dt>Район</dt><dd>{{ app.district }}</dd></div><div><dt>Дата</dt><dd>{{ app.created_at|date:'d.m.Y H:i' }}</dd></div><div><dt>Волонтёр</dt><dd>{{ app.assigned_volunteer|default:'Не назначен' }}</dd></div></dl>
+      <a class="button ghost" href="{% url 'applications:detail' app.id %}">Открыть заявку</a>
+    </article>
+  {% empty %}<div class="surface empty-state"><span>Заявок пока нет</span><small>Новые обращения появятся здесь.</small></div>{% endfor %}
+</div>
+{% endblock %}

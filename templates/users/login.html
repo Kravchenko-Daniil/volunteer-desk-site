@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Вход — Рядом{% endblock %}
+{% block content %}
+<div class="auth-layout"><div class="auth-intro"><span class="eyebrow">Рабочий кабинет</span><h1>Вход для координаторов и волонтёров</h1><p>Обычному заявителю аккаунт не нужен — достаточно оставить заявку через публичную форму.</p></div><form method="post" class="surface form auth-card" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="form-error-summary">{{ form.non_field_errors }}</div>{% endif %}{% for field in form %}<div class="field {% if field.errors %}has-error{% endif %}">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endfor %}<button class="button button-large full" type="submit">Войти</button></form></div>
+{% endblock %}

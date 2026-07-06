@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Рядом — помощь начинается с заявки{% endblock %}
+{% block main_class %}landing{% endblock %}
+{% block content %}
+<section class="hero-section">
+  <div class="hero-content">
+    <span class="eyebrow">Волонтёрская помощь рядом</span>
+    <h1>Расскажите, какая поддержка вам нужна</h1>
+    <p class="hero-lead">Мы бережно примем заявку, уточним детали и найдём волонтёра, который сможет помочь.</p>
+    <div class="hero-actions">
+      <a class="button button-large" href="{% url 'applications:public_create' %}">Оставить заявку</a>
+      <a class="text-link" href="#process">Как это работает <span>→</span></a>
+    </div>
+    <p class="privacy-note">Отправка занимает несколько минут. Данные доступны только координаторам проекта.</p>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="support-card support-card-main">
+      <span class="support-icon">✓</span>
+      <strong>Заявка принята</strong>
+      <small>Координатор свяжется с вами</small>
+    </div>
+    <div class="support-card support-card-side"><span>01</span><small>Просто заполнить</small></div>
+    <div class="support-orbit"></div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="audience-title">
+  <div class="section-heading">
+    <span class="eyebrow">Кому предназначена помощь</span>
+    <h2 id="audience-title">Тем, кому сейчас нужна дополнительная опора</h2>
+    <p>Помощь предназначена для людей, которым требуется поддержка в бытовых, организационных или иных ситуациях, где необходимо участие волонтёров.</p>
+  </div>
+  <div class="feature-grid">
+    <article class="feature-card"><span class="feature-number">01</span><h3>Бытовые задачи</h3><p>Доставка необходимых вещей, помощь с повседневными делами и сопровождение.</p></article>
+    <article class="feature-card"><span class="feature-number">02</span><h3>Организационная помощь</h3><p>Поддержка в ситуациях, где трудно разобраться или справиться самостоятельно.</p></article>
+    <article class="feature-card"><span class="feature-number">03</span><h3>Участие волонтёра</h3><p>Задачи, в которых важны человеческое присутствие, время и внимательность.</p></article>
+  </div>
+</section>
+
+<section class="section process-section" id="process" aria-labelledby="process-title">
+  <div class="section-heading compact"><span class="eyebrow">Понятный процесс</span><h2 id="process-title">Как это работает</h2></div>
+  <ol class="process-grid">
+    <li><span>1</span><div><h3>Вы оставляете заявку</h3><p>Опишите ситуацию и укажите удобные контактные данные.</p></div></li>
+    <li><span>2</span><div><h3>Координатор уточняет детали</h3><p>Проверяет заявку и определяет, какая помощь нужна.</p></div></li>
+    <li><span>3</span><div><h3>Подключается волонтёр</h3><p>Он видит назначенную заявку и отмечает результат.</p></div></li>
+  </ol>
+</section>
+
+<section class="trust-section">
+  <div><span class="eyebrow">После отправки</span><h2>Заявка не потеряется</h2><p>Каждое действие фиксируется в системе: принятие, назначение волонтёра и выполнение. Координаторы видят весь путь заявки.</p></div>
+  <a class="button button-light" href="{% url 'applications:public_create' %}">Оставить заявку</a>
+</section>
+{% endblock %}

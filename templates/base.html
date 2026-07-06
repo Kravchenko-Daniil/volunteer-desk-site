@@ -1,0 +1,88 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}Рядом — заявки на помощь{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% if user.is_authenticated %}authenticated{% else %}public{% endif %}">
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="{% url 'core:home' %}" aria-label="Рядом — на главную">
+      <span class="brand-mark" aria-hidden="true">Р</span>
+      <span><strong>Рядом</strong><small>Помощь начинается с заявки</small></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Основная навигация">
+      <a href="{% url 'applications:public_create' %}">Оставить заявку</a>
+      {% if user.is_authenticated %}
+        {% if user.is_project_admin %}
+          <span class="nav-divider" aria-hidden="true"></span>
+          <a href="{% url 'applications:list' %}">Заявки</a>
+          <a href="{% url 'users:volunteer_list' %}">Волонтёры</a>
+          <a href="{% url 'districts:list' %}">Районы</a>
+        {% endif %}
+        {% if user.is_volunteer %}
+          <span class="nav-divider" aria-hidden="true"></span>
+          <a href="{% url 'applications:volunteer_list' %}">Мои заявки</a>
+        {% endif %}
+        <form method="post" action="{% url 'logout' %}" class="nav-form">
+          {% csrf_token %}<button type="submit" class="nav-link">Выйти</button>
+        </form>
+      {% else %}
+        <a class="nav-login" href="{% url 'login' %}">Войти</a>
+      {% endif %}
+    </nav>
+
+    <details class="mobile-menu">
+      <summary aria-label="Открыть меню"><span></span><span></span><span></span></summary>
+      <nav aria-label="Мобильная навигация">
+        <a href="{% url 'applications:public_create' %}">Оставить заявку</a>
+        {% if user.is_authenticated %}
+          {% if user.is_project_admin %}
+            <p class="mobile-nav-label">Администрирование</p>
+            <a href="{% url 'applications:list' %}">Заявки</a>
+            <a href="{% url 'users:volunteer_list' %}">Волонтёры</a>
+            <a href="{% url 'districts:list' %}">Районы</a>
+          {% endif %}
+          {% if user.is_volunteer %}
+            <p class="mobile-nav-label">Кабинет волонтёра</p>
+            <a href="{% url 'applications:volunteer_list' %}">Мои заявки</a>
+          {% endif %}
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}<button type="submit" class="mobile-logout">Выйти</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+      </nav>
+    </details>
+  </div>
+</header>
+
+<main class="{% block main_class %}container{% endblock %}">
+  {% if messages %}
+    <div class="messages" aria-live="polite">
+      {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><strong>Рядом</strong><p>Сервис координации заявок и волонтёрской помощи.</p></div>
+    <nav aria-label="Правовая информация">
+      <a href="{% url 'core:privacy' %}">Политика обработки данных</a>
+      <a href="{% url 'core:personal_data_consent' %}">Согласие на обработку данных</a>
+    </nav>
+    <small>Юридические тексты находятся в процессе утверждения.</small>
+  </div>
+</footer>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

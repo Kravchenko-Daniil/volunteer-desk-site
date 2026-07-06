@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 20mm; }
+  body { font-family: Arial, sans-serif; font-size: 13px; }
+  h1 { text-align: center; font-size: 22px; }
+  .row { margin: 10px 0; }
+  .label { font-weight: bold; }
+  .box { border: 1px solid #222; padding: 10px; min-height: 80px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .sign { margin-top: 40px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<h1>Заявка № {{ application.id }}</h1>
+<div class="row"><span class="label">Дата:</span> {{ application.created_at|date:'d.m.Y H:i' }}</div>
+<div class="row"><span class="label">ФИО:</span> {{ application.applicant_full_name }}</div>
+<div class="row"><span class="label">Email:</span> {{ application.applicant_email }}</div>
+<div class="row"><span class="label">Район:</span> {{ application.district }}</div>
+<div class="row"><span class="label">Статус:</span> {{ application.get_status_display }}</div>
+<div class="row"><span class="label">Количество необходимых волонтёров:</span> {{ application.people_needed|default:'—' }}</div>
+<div class="row"><span class="label">Назначенный волонтёр:</span> {{ application.assigned_volunteer|default:'—' }}</div>
+<div class="row"><span class="label">Необходимая помощь:</span><div class="box">{{ application.help_description }}</div></div>
+<div class="row"><span class="label">Комментарий:</span><div class="box">{{ application.comment|default:'—' }}</div></div>
+<div class="sign">
+  <div>Подпись волонтёра: ____________________</div>
+  <div>Дата выполнения: {% if application.completed_at %}{{ application.completed_at|date:'d.m.Y' }}{% else %}____________________{% endif %}</div>
+</div>
+</body>
+</html>

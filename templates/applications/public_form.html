@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:'Оставить заявку' }} — Рядом{% endblock %}
+{% block content %}
+<div class="form-page">
+  <header class="page-intro">
+    <span class="eyebrow">Заявка на помощь</span>
+    <h1>{{ title|default:'Расскажите, какая помощь нужна' }}</h1>
+    <p>Заполните поля ниже. Координатор увидит заявку и свяжется с заявителем при необходимости.</p>
+  </header>
+  <form method="post" class="surface form form-surface" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-error-summary">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-grid">
+      {% for field in form %}
+        <div class="field field-{{ field.name }} {% if field.name == 'honeypot' %}hidden{% endif %} {% if field.errors %}has-error{% endif %}">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}
+          {% if field.name == 'personal_data_agreed' %}
+            <p class="field-help">Подтверждая согласие, вы принимаете <a href="{% url 'core:privacy' %}">политику обработки данных</a> и <a href="{% url 'core:personal_data_consent' %}">текст согласия</a>.</p>
+          {% endif %}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+    </div>
+    {% if captcha_enabled %}
+      <div class="captcha-wrap"><div class="h-captcha" data-sitekey="{{ captcha_site_key }}"></div></div>
+    {% endif %}
+    <div class="form-actions"><button class="button button-large" type="submit">Отправить заявку</button><span>Поля с обязательными данными должны быть заполнены.</span></div>
+  </form>
+</div>
+{% endblock %}
+{% block extra_scripts %}{% if captcha_enabled %}<script src="https://js.hcaptcha.com/1/api.js" async defer></script>{% endif %}{% endblock %}
