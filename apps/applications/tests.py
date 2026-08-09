@@ -41,6 +41,7 @@ class ProjectTestCase(TestCase):
         data = {
             'applicant_full_name': 'Иван Иванов',
             'applicant_email': 'applicant@test.local',
+            'applicant_phone': '+7 900 000-00-00',
             'district': self.active_district.pk,
             'help_description': 'Нужна помощь с доставкой.',
             'people_needed': 1,
@@ -403,3 +404,29 @@ class CompletedApplicationSafetyTests(ProjectTestCase):
             application.actions.filter(action=ApplicationAction.Action.COMPLETED).count(),
             1,
         )
+
+
+class ApplicantPhoneTests(ProjectTestCase):
+    def test_public_application_without_phone_is_not_saved(self):
+        data = self.application_data(applicant_phone='')
+        response = self.client.post(reverse('applications:public_create'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('applicant_phone', response.context['form'].errors)
+        self.assertFalse(Application.objects.filter(applicant_email=data['applicant_email']).exists())
+
+    def test_public_application_with_phone_is_saved(self):
+        response = self.client.post(
+            reverse('applications:public_create'),
+            self.application_data(applicant_phone='+7 901 234-56-78'),
+        )
+        self.assertRedirects(response, reverse('applications:thanks'))
+        application = Application.objects.get(applicant_email='applicant@test.local')
+        self.assertEqual(application.applicant_phone, '+7 901 234-56-78')
+
+    def test_volunteer_for_other_application_allows_missing_phone(self):
+        self.client.force_login(self.volunteer)
+        data = self.application_data(applicant_phone='')
+        response = self.client.post(reverse('applications:volunteer_create_for_other'), data)
+        self.assertRedirects(response, reverse('applications:volunteer_list'))
+        application = Application.objects.get(created_from=Application.CreatedFrom.VOLUNTEER_FOR_OTHER)
+        self.assertEqual(application.applicant_phone, '')

@@ -1,11 +1,19 @@
 from django import forms
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.utils import timezone
 from apps.districts.models import District
 from .models import Application
 
 class PublicApplicationForm(forms.ModelForm):
     applicant_email = forms.EmailField(label='Email заявителя', required=True)
+    applicant_phone = forms.CharField(
+        label='Телефон заявителя',
+        required=True,
+        max_length=32,
+        widget=forms.TextInput(attrs={'type': 'tel', 'inputmode': 'tel', 'autocomplete': 'tel', 'placeholder': '+7 900 000-00-00'}),
+        validators=[RegexValidator(r'^\+?[0-9\s\-()]{7,32}$', 'Введите телефон, например +7 900 000-00-00.')],
+    )
     personal_data_agreed = forms.BooleanField(
         label='Я даю согласие на обработку персональных данных',
         required=True,
@@ -17,6 +25,7 @@ class PublicApplicationForm(forms.ModelForm):
         fields = [
             'applicant_full_name',
             'applicant_email',
+            'applicant_phone',
             'district',
             'help_description',
             'people_needed',
@@ -61,6 +70,13 @@ class VolunteerSelfApplicationForm(PublicApplicationForm):
 
 class VolunteerForOtherApplicationForm(PublicApplicationForm):
     applicant_email = forms.EmailField(label='Email заявителя (если есть)', required=False)
+    applicant_phone = forms.CharField(
+        label='Телефон заявителя (если есть)',
+        required=False,
+        max_length=32,
+        widget=forms.TextInput(attrs={'type': 'tel', 'inputmode': 'tel', 'autocomplete': 'tel', 'placeholder': '+7 900 000-00-00'}),
+        validators=[RegexValidator(r'^\+?[0-9\s\-()]{7,32}$', 'Введите телефон, например +7 900 000-00-00.')],
+    )
     personal_data_agreed = forms.BooleanField(
         label='Согласие заявителя на передачу и обработку персональных данных получено',
         required=True,

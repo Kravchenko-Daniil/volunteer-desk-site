@@ -17,6 +17,7 @@
 <div class="row"><span class="label">Дата:</span> {{ application.created_at|date:'d.m.Y H:i' }}</div>
 <div class="row"><span class="label">ФИО:</span> {{ application.applicant_full_name }}</div>
 <div class="row"><span class="label">Email:</span> {{ application.applicant_email }}</div>
+<div class="row"><span class="label">Телефон:</span> {{ application.applicant_phone|default:'—' }}</div>
 <div class="row"><span class="label">Район:</span> {{ application.district }}</div>
 <div class="row"><span class="label">Статус:</span> {{ application.get_status_display }}</div>
 <div class="row"><span class="label">Количество необходимых волонтёров:</span> {{ application.people_needed|default:'—' }}</div>

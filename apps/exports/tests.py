@@ -81,3 +81,21 @@ class ExcelExportTest(TestCase):
             msg=f'Expected 1 data row for status=new, got {data_rows}.',
         )
         self.assertLessEqual(data_rows, 3)
+
+    def test_export_includes_applicant_phone(self):
+        self.app1.applicant_phone = '+79991234567'
+        self.app1.save()
+
+        self.client.force_login(self.admin)
+        response = self.client.get(self.export_url)
+        self.assertEqual(response.status_code, 200)
+        ws = self._load_sheet(response.content)
+
+        header = [cell.value for cell in ws[1]]
+        phone_column = header.index('Телефон') + 1
+
+        phones_in_sheet = [
+            ws.cell(row, phone_column).value
+            for row in range(2, ws.max_row + 1)
+        ]
+        self.assertIn('+79991234567', phones_in_sheet)

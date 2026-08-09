@@ -11,7 +11,7 @@ class ApplicationActionInline(admin.TabularInline):
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ('id', 'created_at', 'applicant_full_name', 'district', 'status', 'assigned_volunteer')
     list_filter = ('status', 'district', 'assigned_volunteer', 'created_from')
-    search_fields = ('applicant_full_name', 'applicant_email')
+    search_fields = ('applicant_full_name', 'applicant_email', 'applicant_phone')
     inlines = [ApplicationActionInline]
     readonly_fields = (
         'status',
