@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Рядом — помощь начинается с заявки{% endblock %}
+{% block title %}Юный Нарт — помощь начинается с заявки{% endblock %}
 {% block main_class %}landing{% endblock %}
 {% block content %}
 <section class="hero-section">
@@ -62,5 +62,41 @@
 <section class="trust-section">
   <div><span class="eyebrow">После отправки</span><h2>Заявка не потеряется</h2><p>Каждое действие фиксируется в системе: принятие, назначение волонтёра и выполнение. Координаторы видят весь путь заявки.</p></div>
   <a class="button button-light" href="{% url 'applications:public_create' %}">Оставить заявку</a>
+</section>
+
+<section class="section contacts-section" id="contacts" aria-labelledby="contacts-title">
+  <div class="section-heading compact">
+    <span class="eyebrow">Связаться с нами</span>
+    <h2 id="contacts-title">Контакты</h2>
+    <p>Если вопрос не укладывается в форму заявки — напишите или позвоните напрямую.</p>
+  </div>
+  <ul class="contact-grid">
+    <li class="contact-card">
+      <span class="contact-label">VK</span>
+      <a href="https://vk.com/youngnart" target="_blank" rel="noopener">@youngnart</a>
+    </li>
+    <li class="contact-card">
+      <span class="contact-label">Telegram</span>
+      <a href="https://t.me/youngnart" target="_blank" rel="noopener">@youngnart</a>
+    </li>
+    <li class="contact-card">
+      <span class="contact-label">Почта</span>
+      <a href="mailto:YoungNart@mail.ru">YoungNart@mail.ru</a>
+    </li>
+    <li class="contact-card">
+      <span class="contact-label">Телефон</span>
+      <a href="tel:+77777777777">+7 777 777 77 77</a>
+    </li>
+  </ul>
+</section>
+
+<section class="section partners-section" id="partners" aria-labelledby="partners-title">
+  <div class="section-heading compact">
+    <span class="eyebrow">Вместе с нами</span>
+    <h2 id="partners-title">Наши партнёры</h2>
+    <p>Проект открыт к сотрудничеству с организациями, сообществами и предпринимателями. Здесь появятся те, кто помогает нам делать помощь доступнее.</p>
+  </div>
+  {# Логотипы партнёров добавляются сюда: <li class="partner-card"><img src="..." alt="Название"></li> #}
+  <a class="button ghost" href="mailto:YoungNart@mail.ru?subject=Сотрудничество%20с%20проектом%20%D0%AE%D0%BD%D1%8B%D0%B9%20%D0%9D%D0%B0%D1%80%D1%82">Стать партнёром</a>
 </section>
 {% endblock %}

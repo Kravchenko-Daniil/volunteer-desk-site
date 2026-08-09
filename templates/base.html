@@ -5,16 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>{% block title %}Рядом — заявки на помощь{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+  <title>{% block title %}Юный Нарт — заявки на помощь{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{% static 'img/brand/favicon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/brand/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}authenticated{% else %}public{% endif %}">
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href="{% url 'core:home' %}" aria-label="Рядом — на главную">
-      <span class="brand-mark" aria-hidden="true">Р</span>
-      <span><strong>Рядом</strong><small>Помощь начинается с заявки</small></span>
+    <a class="brand" href="{% url 'core:home' %}" aria-label="Юный Нарт — на главную">
+      <img class="brand-logo" src="{% static 'img/brand/logo.webp' %}" alt="" width="286" height="160" decoding="async">
+      <span><strong>Юный Нарт</strong><small>Помощь начинается с заявки</small></span>
     </a>
 
     <nav class="desktop-nav" aria-label="Основная навигация">
@@ -75,10 +77,18 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div><strong>Рядом</strong><p>Сервис координации заявок и волонтёрской помощи.</p></div>
+    <div><strong>Юный Нарт</strong><p>Сервис координации заявок и волонтёрской помощи.</p></div>
     <nav aria-label="Правовая информация">
+      <span class="footer-label">Документы</span>
       <a href="{% url 'core:privacy' %}">Политика обработки данных</a>
       <a href="{% url 'core:personal_data_consent' %}">Согласие на обработку данных</a>
+    </nav>
+    <nav aria-label="Контакты">
+      <span class="footer-label">Контакты</span>
+      <a href="https://vk.com/youngnart" target="_blank" rel="noopener">VK @youngnart</a>
+      <a href="https://t.me/youngnart" target="_blank" rel="noopener">Telegram @youngnart</a>
+      <a href="mailto:YoungNart@mail.ru">YoungNart@mail.ru</a>
+      <a href="tel:+77777777777">+7 777 777 77 77</a>
     </nav>
     <small>Юридические тексты находятся в процессе утверждения.</small>
   </div>
