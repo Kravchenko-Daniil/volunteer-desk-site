@@ -54,6 +54,7 @@ response = client.post(
     {
         'applicant_full_name': 'Тестовый заявитель',
         'applicant_email': 'public@smoke.test',
+        'applicant_phone': '+7 900 000-00-00',
         'district': district.pk,
         'help_description': ' '.join([
             'Нужна тестовая помощь с доставкой продуктов и сопровождением заявителя.'
@@ -98,7 +99,7 @@ assert application.status == Application.Status.COMPLETED
 assert application.completed_at is not None
 
 for email, route, extra in [
-    ('self@smoke.test', 'applications:volunteer_create_self', {}),
+    ('self@smoke.test', 'applications:volunteer_create_self', {'applicant_phone': '+7 900 111-22-33'}),
     ('', 'applications:volunteer_create_for_other', {}),
 ]:
     response = client.post(
@@ -141,8 +142,10 @@ workbook = load_workbook(BytesIO(xlsx_response.content), read_only=True, data_on
 sheet = workbook['Заявки']
 rows = list(sheet.iter_rows(values_only=True))
 assert len(rows) == 2, f'Excel-фильтр вернул {len(rows) - 1} строк вместо 1'
+header = list(rows[0])
 assert rows[1][0] == application.pk
-assert rows[1][7] == application.get_status_display()
+assert rows[1][header.index('Статус')] == application.get_status_display()
+assert rows[1][header.index('Телефон')] == application.applicant_phone
 
 expected_actions = {
     ApplicationAction.Action.CREATED,

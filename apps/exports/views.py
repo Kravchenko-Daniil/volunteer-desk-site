@@ -46,7 +46,7 @@ def export_applications_xlsx(request):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Заявки'
-    ws.append(['№', 'Дата', 'ФИО', 'Email', 'Район', 'Описание помощи', 'Кол-во людей', 'Статус', 'Волонтёр', 'Дата выполнения', 'Комментарий выполнения'])
+    ws.append(['№', 'Дата', 'ФИО', 'Email', 'Телефон', 'Район', 'Описание помощи', 'Кол-во людей', 'Статус', 'Волонтёр', 'Дата выполнения', 'Комментарий выполнения'])
     for cell in ws[1]:
         cell.font = Font(bold=True, color='FFFFFF')
         cell.fill = PatternFill('solid', fgColor='174EA6')
@@ -58,6 +58,7 @@ def export_applications_xlsx(request):
             timezone.localtime(app.created_at).replace(tzinfo=None),
             app.applicant_full_name,
             app.applicant_email,
+            app.applicant_phone,
             app.district.name,
             app.help_description,
             app.people_needed,
@@ -69,10 +70,10 @@ def export_applications_xlsx(request):
         row_number = ws.max_row
         for cell in ws[row_number]:
             cell.alignment = Alignment(vertical='top')
-        ws.cell(row_number, 6).alignment = Alignment(vertical='top', wrap_text=True)
-        ws.cell(row_number, 11).alignment = Alignment(vertical='top', wrap_text=True)
+        ws.cell(row_number, 7).alignment = Alignment(vertical='top', wrap_text=True)
+        ws.cell(row_number, 12).alignment = Alignment(vertical='top', wrap_text=True)
         ws.cell(row_number, 2).number_format = 'dd.mm.yyyy hh:mm'
-        ws.cell(row_number, 10).number_format = 'dd.mm.yyyy hh:mm'
+        ws.cell(row_number, 11).number_format = 'dd.mm.yyyy hh:mm'
         wrapped_lines = max(
             math.ceil(len(app.help_description) / 55),
             math.ceil(len(app.completion_comment or '') / 45),
@@ -80,7 +81,7 @@ def export_applications_xlsx(request):
         )
         ws.row_dimensions[row_number].height = min(390, max(24, wrapped_lines * 15))
 
-    widths = [10, 20, 28, 28, 20, 45, 16, 16, 28, 20, 35]
+    widths = [10, 20, 28, 28, 20, 20, 45, 16, 16, 28, 20, 35]
     for index, width in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(index)].width = width
     ws.freeze_panes = 'A2'

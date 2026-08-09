@@ -19,6 +19,7 @@ class Application(models.Model):
 
     applicant_full_name = models.CharField('ФИО заявителя', max_length=255)
     applicant_email = models.EmailField('Email заявителя', blank=True)
+    applicant_phone = models.CharField('Телефон заявителя', max_length=32, blank=True)
     district = models.ForeignKey('districts.District', on_delete=models.PROTECT, verbose_name='Район')
     help_description = models.TextField('Описание необходимой помощи')
     people_needed = models.PositiveIntegerField('Количество людей', null=True, blank=True)

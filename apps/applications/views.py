@@ -176,6 +176,8 @@ def application_complete(request, pk):
 def volunteer_create_self(request):
     require_volunteer(request.user)
     initial = {'applicant_full_name': request.user.full_name, 'applicant_email': request.user.email}
+    if request.user.phone:
+        initial['applicant_phone'] = request.user.phone
     if request.method == 'POST':
         form = VolunteerSelfApplicationForm(request.POST, initial=initial)
         if form.is_valid():
